@@ -15,14 +15,16 @@ class ProfileContainer extends React.Component {
     componentDidMount() {
         let userId = this.props.match.params.userId;
         if (!userId) {
-            userId = 2;
+            userId = this.props.currentActiveUserId;
+            if (!userId) {
+                this.props.history.push("/login");
+            }
         }
         this.props.obtainProfileDataThunkCreator(userId);
         this.props.getProfileStatusThunkCreator(userId);
     }
 
     render() {
-
         return (
             <div>
                 <Profile {...this.props} profile={this.props.profile} status={this.props.status}
@@ -34,10 +36,14 @@ class ProfileContainer extends React.Component {
 
 let mapStateToProps = (state) => ({
     profile: state.profilePage.profile,
-    status: state.profilePage.status
+    status: state.profilePage.status,
+    currentActiveUserId: state.auth.userId,
+    isAuth: state.auth.isAuth
+
 });
 
-export default compose(
+
+/*export default compose(
     connect(mapStateToProps, {
         obtainProfileDataThunkCreator,
         getProfileStatusThunkCreator,
@@ -45,4 +51,12 @@ export default compose(
     }),
     withRouter,
     withAuthRedirect
+)(ProfileContainer);*/
+export default compose(
+    connect(mapStateToProps, {
+        obtainProfileDataThunkCreator,
+        getProfileStatusThunkCreator,
+        updateProfileStatusThunkCreator
+    }),
+    withRouter
 )(ProfileContainer);

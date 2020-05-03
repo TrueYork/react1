@@ -1,5 +1,4 @@
 const SEND_MESSAGE = 'SEND-MESSAGE';
-const UPDATE_NEW_OUT_MSG_TEXT = 'UPDATE-NEW-OUT-MSG-TEXT';
 
 let initialState = {
     messages: [
@@ -21,8 +20,7 @@ let initialState = {
             ava: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSFD1Ofi7-DsfgVE7CojIqMuNGYEN1N4dGyec3hJQebtISancyF&usqp=CAU'
         }
     ],
-    newOutMessage: ''
-}
+};
 
 const messageReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -30,33 +28,23 @@ const messageReducer = (state = initialState, action) => {
         case SEND_MESSAGE:
             let newMessage = {
                 id: state.messages.length + 1,
-                message: state.newOutMessage,
+                message: action.newOutMessage,
                 ownerId: 0
             };
             return {
                 ...state,
                 messages: [...state.messages, newMessage],
-                newOutMessage: ''
             };
 
-        case UPDATE_NEW_OUT_MSG_TEXT:
-            return {
-                ...state,
-                newOutMessage: action.newText
-            };
 
         default:
             return state;
     }
 };
 
-export const sendMessage = () => ({
-    type: SEND_MESSAGE
-});
-
-export const updateNewMessageText = (newText) => ({
-    type: UPDATE_NEW_OUT_MSG_TEXT,
-    newText: newText
+export const sendMessage = (text) => ({
+    type: SEND_MESSAGE,
+    newOutMessage: text
 });
 
 export default messageReducer;
