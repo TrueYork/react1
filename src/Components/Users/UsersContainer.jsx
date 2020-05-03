@@ -9,6 +9,14 @@ import Users from "./Users";
 import Preloader from "../Common/Preloader/Preloader";
 //import {withAuthRedirect} from "../../HOC/withAuthRedirect";
 import {compose} from "redux";
+import {
+    getCurrentPage,
+    getIsFetching,
+    getIsOperationInProgress,
+    getPageSize,
+    getTotalUsersCount,
+    getUsersSuperSelector
+} from "../../Redux/userSelectors";
 
 class UsersContainer extends React.Component {
 
@@ -21,6 +29,7 @@ class UsersContainer extends React.Component {
     };
 
     render() {
+        //console.log("render USERS");
         return <>
             {this.props.isFetching ? <Preloader/> : null}
             <Users totalUsersCount={this.props.totalUsersCount} pageSize={this.props.pageSize}
@@ -32,7 +41,7 @@ class UsersContainer extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
+/*const mapStateToProps = (state) => {
     return {
         users: state.usersPage.users,
         pageSize: state.usersPage.pageSize,
@@ -40,6 +49,19 @@ const mapStateToProps = (state) => {
         currentPage: state.usersPage.currentPage,
         isFetching: state.usersPage.isFetching,
         isOperationInProgress: state.usersPage.isOperationInProgress
+    }
+};*/
+
+const mapStateToProps = (state) => {
+    //console.log("mapStateToProps USERS");
+    return {
+        //users: getUsersSelector(state),
+        users: getUsersSuperSelector(state),
+        pageSize: getPageSize(state),
+        totalUsersCount: getTotalUsersCount(state),
+        currentPage: getCurrentPage(state),
+        isFetching: getIsFetching(state),
+        isOperationInProgress: getIsOperationInProgress(state)
     }
 };
 

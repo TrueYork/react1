@@ -14,11 +14,14 @@ let initialState = {
     totalUsersCount: 0,
     currentPage: 1,
     isFetching: false,
-    isOperationInProgress: []
-}
+    isOperationInProgress: [],
+    fake: 10
+};
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
+
+        case "FAKE": return {...state, fake: state.fake + 1};
 
         case FOLLOW:
             return {
@@ -105,8 +108,8 @@ export const toggleInProgressOperation = (isOperationInProgress, userId) => ({
 
 export const getUsersThunkCreator = (currentPage, pageSize) => {
     return (dispatch) => {
-        dispatch(setCurrentPage(currentPage));
         dispatch(toggleIsFetching(true));
+        dispatch(setCurrentPage(currentPage));
         usersAPI.getUserList(currentPage, pageSize).then(data => {
             dispatch(toggleIsFetching(false));
             dispatch(setUsers(data.items));

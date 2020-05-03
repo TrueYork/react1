@@ -13,6 +13,7 @@ import LoginPage from "./Components/Login/Login";
 import {connect} from "react-redux";
 import {initializeAppThunkCreator} from "./Redux/initReducer";
 import Preloader from "./Components/Common/Preloader/Preloader";
+import {getIsInitializing} from "./Redux/initSelectors";
 
 class App extends React.Component {
 
@@ -45,7 +46,7 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    initialized: state.app.isInitializing
+    initialized: getIsInitializing(state)
 });
 
 export default connect(mapStateToProps, {initializeAppThunkCreator})(App);
