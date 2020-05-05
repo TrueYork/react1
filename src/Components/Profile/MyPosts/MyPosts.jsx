@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import classes from './MyPosts.module.css';
 import Post from './Post/Post';
 import {Field, reduxForm} from "redux-form";
@@ -9,10 +9,10 @@ const maxLength10 = maxLengthCreator(10);
 
 const TextArea = Element("textarea");
 
-class MyPosts extends React.Component {
-
+class MyPosts extends PureComponent {
     render() {
-        let postDataHtml = this.props.profileState.posts.map((post) =>
+        console.log("MyPost render");
+        let postDataHtml = this.props.posts.map((post) =>
             <Post message={post.post} key={post.id} likes={post.likesCount}/>
         );
 
@@ -29,7 +29,7 @@ class MyPosts extends React.Component {
                 </div>
             </div>
         );
-    };
+    }
 }
 
 const AddNewPostForm = (props) => {
