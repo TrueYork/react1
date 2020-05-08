@@ -1,9 +1,9 @@
 import {profileAPI} from "../API/api";
 
-const ADD_POST = 'ADD-POST';
-const REMOVE_POST = 'REMOVE-POST';
-const SET_USER_PROFILE = 'SET-USER-PROFILE';
-const SET_STATUS = 'SET-STATUS';
+const ADD_POST = 'social-network/profile/ADD-POST';
+const REMOVE_POST = 'social-network/profile/REMOVE-POST';
+const SET_USER_PROFILE = 'social-network/profile/SET-USER-PROFILE';
+const SET_STATUS = 'social-network/profile/SET-STATUS';
 
 let initialState = {
     posts: [
@@ -69,29 +69,20 @@ export const setStatus = (status) => ({
     status: status
 });
 
-export const obtainProfileDataThunkCreator = (userId) => {
-    return (dispatch) => {
-        profileAPI.getProfileByUserId(userId).then(data => {
-            dispatch(setUserProfile(data))
-        });
-    }
+export const obtainProfileDataThunkCreator = (userId) => async (dispatch) => {
+    let response = await profileAPI.getProfileByUserId(userId);
+    dispatch(setUserProfile(response.data));
 };
 
-export const getProfileStatusThunkCreator = (userId) => {
-    return (dispatch) => {
-        profileAPI.getStatus(userId).then(response => {
-            dispatch(setStatus(response.data))
-        });
-    }
+export const getProfileStatusThunkCreator = (userId) => async (dispatch) => {
+    let response = await profileAPI.getStatus(userId);
+    dispatch(setStatus(response.data));
 };
 
-export const updateProfileStatusThunkCreator = (status) => {
-    return (dispatch) => {
-        profileAPI.setStatus(status).then(response => {
-            if (response.data.resultCode === 0) {
-                dispatch(setStatus(status))
-            }
-        });
+export const updateProfileStatusThunkCreator = (status) => async (dispatch) => {
+    let response = await profileAPI.setStatus(status);
+    if (response.data.resultCode === 0) {
+        dispatch(setStatus(status))
     }
 };
 

@@ -1,7 +1,7 @@
 import {authAPI} from "../API/api";
 import {stopSubmit} from "redux-form";
 
-const SET_USER_DATA = 'SET-USER-DATA';
+const SET_USER_DATA = 'social-network/auth/SET-USER-DATA';
 
 let initialState = {
     userId: null,
@@ -32,35 +32,28 @@ export const setAuthData = (userId, email, login, isAuth) => ({
     }
 });
 
-export const doAuthThunkCreator = () => (dispatch) => {
-        return authAPI.getAuthData().then(data => {
-            if (data.resultCode === 0) {
-                let {email, id, login} = data.data;
-                dispatch(setAuthData(id, email, login, true))
-            }
-        });
-};
-
-export const doLoginThunkCreator = (email, password, rememberMe) => {
-    return (dispatch) => {
-        authAPI.login(email, password, rememberMe).then(data => {
-            if (data.resultCode === 0) {
-                dispatch(doAuthThunkCreator())
-            } else {
-                let errorMessage = data.messages.length > 0 ? data.messages[0] : "Common error";
-                dispatch(stopSubmit("login", {_error: errorMessage}));
-            }
-        });
+export const doAuthThunkCreator = () => async (dispatch) => {
+    let response = await authAPI.getAuthData();
+    if (response.data.resultCode === 0) {
+        let {email, id, login} = response.data.data;
+        dispatch(setAuthData(id, email, login, true))
     }
 };
 
-export const doLogoutThunkCreator = () => {
-    return (dispatch) => {
-        authAPI.logout().then(data => {
-            if (data.resultCode === 0) {
-                dispatch(setAuthData(null, null, null, false))
-            }
-        });
+export const doLoginThunkCreator = (email, password, rememberMe) => async (dispatch) => {
+    let response = await authAPI.login(email, password, rememberMe);
+    if (response.data.resultCode === 0) {
+        dispatch(doAuthThunkCreator())
+    } else {
+        let errorMessage = response.data.messages.length > 0 ? response.data.messages[0] : "Common error";
+        dispatch(stopSubmit("login", {_error: errorMessage}));
+    }
+};
+
+export const doLogoutThunkCreator = () => async (dispatch) => {
+    let response = await authAPI.logout();
+    if (response.data.resultCode === 0) {
+        dispatch(setAuthData(null, null, null, false))
     }
 };
 

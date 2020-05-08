@@ -1,12 +1,16 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
-import {Provider} from "react-redux";
-import store from "./Redux/reduxStore";
-import {BrowserRouter} from "react-router-dom";
+import {render as testingRender} from '@testing-library/react';
+import MainApp from "./App";
+import {render, unmountComponentAtNode} from 'react-dom'
 
 test('renders learn react link', () => {
-  const { getByText } = render(<Provider store={store}><BrowserRouter><App /></BrowserRouter></Provider>);
+  const { getByText } = testingRender(<MainApp/>);
   const linkElement = getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
+});
+
+test('renders without crashing', () => {
+  const div = document.createElement('div');
+  render(<MainApp/>, div);
+  unmountComponentAtNode(div);
 });

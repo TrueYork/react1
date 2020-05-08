@@ -11,7 +11,7 @@ const TextArea = Element("textarea");
 
 class MyPosts extends PureComponent {
     render() {
-        console.log("MyPost render");
+        //console.log("MyPost render");
         let postDataHtml = this.props.posts.map((post) =>
             <Post message={post.post} key={post.id} likes={post.likesCount}/>
         );
