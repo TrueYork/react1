@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import classes from './Paginator.module.css';
-import cn from "classnames";
+import classnames from "classnames";
 
 let Paginator = ({currentPage, onPageChange, totalItemsCount, pageSize, portionSize = 10}) => {
 
@@ -21,7 +21,7 @@ let Paginator = ({currentPage, onPageChange, totalItemsCount, pageSize, portionS
                 setPortionNumber(portionNumber - 1)
             }}>PREV</button>}
             {pages.filter(page => page >= leftPortionPageNumber && page <= rightPortionPageNumber).map((page) => {
-                return <span className={cn({
+                return <span className={classnames({
                     [classes.selectedPage]: currentPage === page
                 }, classes.pageNumber)}
                              key={page}

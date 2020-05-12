@@ -1,20 +1,23 @@
-import {authAPI} from "../API/api";
+import {authAPI, securityAPI} from "../API/api";
 import {stopSubmit} from "redux-form";
 
 const SET_USER_DATA = 'social-network/auth/SET-USER-DATA';
+const SET_CAPTCHA_URL = 'social-network/auth/SET-CAPTCHA-URL';
 
 let initialState = {
     userId: null,
     email: null,
     login: null,
     isFetching: false,
-    isAuth: false
+    isAuth: false,
+    captchaURL: null
 };
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case SET_USER_DATA:
+        case SET_CAPTCHA_URL:
             return {...state, ...action.data};
 
         default:
@@ -32,6 +35,11 @@ export const setAuthData = (userId, email, login, isAuth) => ({
     }
 });
 
+export const setCaptchaURL = (captchaURL) => ({
+    type: SET_CAPTCHA_URL,
+    data: {captchaURL}
+});
+
 export const doAuthThunkCreator = () => async (dispatch) => {
     let response = await authAPI.getAuthData();
     if (response.data.resultCode === 0) {
@@ -40,14 +48,17 @@ export const doAuthThunkCreator = () => async (dispatch) => {
     }
 };
 
-export const doLoginThunkCreator = (email, password, rememberMe) => async (dispatch) => {
-    let response = await authAPI.login(email, password, rememberMe);
+export const doLoginThunkCreator = (email, password, rememberMe, captcha = null) => async (dispatch) => {
+    let response = await authAPI.login(email, password, rememberMe, captcha);
     if (response.data.resultCode === 0) {
         dispatch(doAuthThunkCreator())
     } else {
-        let errorMessage = response.data.messages.length > 0 ? response.data.messages[0] : "Common error";
-        dispatch(stopSubmit("login", {_error: errorMessage}));
+        if (response.data.resultCode === 10) {
+            dispatch(getCaptchaURLThunkCreator());
+        }
     }
+    let errorMessage = response.data.messages.length > 0 ? response.data.messages[0] : "Common error";
+    dispatch(stopSubmit("login", {_error: errorMessage}));
 };
 
 export const doLogoutThunkCreator = () => async (dispatch) => {
@@ -55,6 +66,12 @@ export const doLogoutThunkCreator = () => async (dispatch) => {
     if (response.data.resultCode === 0) {
         dispatch(setAuthData(null, null, null, false))
     }
+};
+
+export const getCaptchaURLThunkCreator = () => async (dispatch) => {
+    let response = await securityAPI.getCaptchaURL();
+    let captchaURL = response.data.url;
+    dispatch(setCaptchaURL(captchaURL));
 };
 
 export default authReducer;
